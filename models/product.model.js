@@ -118,7 +118,6 @@ const productSchema = new mongoose.Schema(
                 },
             },
         ],
-
         daily_stock: [
             {
                 price: {
@@ -131,7 +130,6 @@ const productSchema = new mongoose.Schema(
                 },
             },
         ],
-
         weekly_stock: [
             {
                 price: {
@@ -144,7 +142,6 @@ const productSchema = new mongoose.Schema(
                 },
             },
         ],
-
         monthly_stock: [
             {
                 price: {
@@ -157,7 +154,6 @@ const productSchema = new mongoose.Schema(
                 },
             },
         ],
-
         yearly_stock: [
             {
                 price: {
@@ -170,7 +166,6 @@ const productSchema = new mongoose.Schema(
                 },
             },
         ],
-
         buy_box_currency: {
             type: String,
             default: "SAR",
@@ -339,6 +334,66 @@ const productSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        sold_24_hours_history: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+        daily_sold_24_hours: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+        weekly_sold_24_hours: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+        monthly_sold_24_hours: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+        yearly_sold_24_hours: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
         price_change: {
             type: Number,
             default: 0,
@@ -675,6 +730,27 @@ productSchema.pre("save", async function (next) {
         this.weekly_stock = getWeeklyTradeValue(this.stock_history);
         this.yearly_stock = getYearlyTradeValue(this.stock_history);
         this.monthly_stock = getMonthlyTradeValue(this.stock_history);
+    }
+
+    // if sold_24_hours is modified
+    if (this.isModified("sold_24_hours")) {
+        this.sold_24_hours_history.push({
+            price: this.sold_24_hours,
+            date: new Date(),
+        });
+
+        this.daily_sold_24_hours = getDailyTradeValue(
+            this.sold_24_hours_history
+        );
+        this.weekly_sold_24_hours = getWeeklyTradeValue(
+            this.sold_24_hours_history
+        );
+        this.yearly_sold_24_hours = getYearlyTradeValue(
+            this.sold_24_hours_history
+        );
+        this.monthly_sold_24_hours = getMonthlyTradeValue(
+            this.sold_24_hours_history
+        );
     }
 
     next();

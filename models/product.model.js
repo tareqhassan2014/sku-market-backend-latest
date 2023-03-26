@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 const AlertHandler = require("../util/AlertHelper");
+const getDailyTradeValue = require("../util/getDailyTradeValue");
+const getMonthlyTradeValue = require("../util/getMonthlyTradeValue");
+const getWeeklyTradeValue = require("../util/getWeeklyTradeValue");
+const getYearlyTradeValue = require("../util/getYearlyTradeValue");
 const Alert = require("./alert.model");
 const priceModel = require("./price.model");
 const Stock = require("./stock.model");
@@ -102,6 +106,71 @@ const productSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        stock_history: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+
+        daily_stock: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+
+        weekly_stock: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+
+        monthly_stock: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+
+        yearly_stock: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+
         buy_box_currency: {
             type: String,
             default: "SAR",
@@ -130,9 +199,130 @@ const productSchema = new mongoose.Schema(
         est_market_cap: {
             type: Number,
         },
+        market_cap_history: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+        daily_market_cap: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+        weekly_market_cap: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+        monthly_market_cap: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+        yearly_market_cap: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
         trade_value: {
             type: Number,
+            default: 0,
         },
+        trade_value_history: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+        daily_trade_value: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+        weekly_trade_value: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+        monthly_trade_value: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
+        yearly_trade_value: [
+            {
+                price: {
+                    type: Number,
+                    default: 0,
+                },
+                date: {
+                    type: Date,
+                    required: [true, "date is required"],
+                },
+            },
+        ],
         est_net_revenue: {
             type: Number,
             default: 0,
@@ -332,11 +522,14 @@ productSchema.pre("save", async function (next) {
     // if estimated SOH is modified, update the est_market_cap
     if (this.isModified("estimated_SOH") || this.isModified("current_price")) {
         // update the est_market_cap
-        this.est_market_cap = (this.estimated_SOH * this.current_price).toFixed(
-            2
-        );
+        this.est_market_cap = (
+            (this.estimated_SOH || 0) * (this.current_price || 0)
+        ).toFixed(2);
 
-        this.trade_value = (this.current_price * this.sold_24_hours).toFixed(2);
+        let trade_value = (this.current_price || 0) * this.sold_24_hours;
+
+        // if trade value is a number fixed to 2 decimal places
+        if (!isNaN(trade_value)) this.trade_value = trade_value.toFixed(2);
 
         // update the days on hand
         this.days_on_hand = Math.ceil(
@@ -442,6 +635,46 @@ productSchema.pre("save", async function (next) {
         ) {
             this.opp_ff = true;
         }
+    }
+
+    // if trade_value is modified store the value in the trade_value_history array
+    if (this.isModified("trade_value")) {
+        this.trade_value_history.push({
+            price: this.trade_value,
+            date: new Date(),
+        });
+
+        this.daily_trade_value = getDailyTradeValue(this.trade_value_history);
+        this.weekly_trade_value = getWeeklyTradeValue(this.trade_value_history);
+        this.yearly_trade_value = getYearlyTradeValue(this.trade_value_history);
+        this.monthly_trade_value = getMonthlyTradeValue(
+            this.trade_value_history
+        );
+    }
+
+    if (this.isModified("est_market_cap")) {
+        this.market_cap_history.push({
+            price: this.est_market_cap,
+            date: new Date(),
+        });
+
+        this.daily_market_cap = getDailyTradeValue(this.market_cap_history);
+        this.weekly_market_cap = getWeeklyTradeValue(this.market_cap_history);
+        this.yearly_market_cap = getYearlyTradeValue(this.market_cap_history);
+        this.monthly_market_cap = getMonthlyTradeValue(this.market_cap_history);
+    }
+
+    // if estimated_SOH is modified
+    if (this.isModified("estimated_SOH")) {
+        this.stock_history.push({
+            price: this.estimated_SOH,
+            date: new Date(),
+        });
+
+        this.daily_stock = getDailyTradeValue(this.stock_history);
+        this.weekly_stock = getWeeklyTradeValue(this.stock_history);
+        this.yearly_stock = getYearlyTradeValue(this.stock_history);
+        this.monthly_stock = getMonthlyTradeValue(this.stock_history);
     }
 
     next();

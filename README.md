@@ -1,3 +1,3 @@
 # sku-market-backend
 
-for vercel
+server url: sku-market-backend-tareq.vercel.app

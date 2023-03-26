@@ -32,16 +32,21 @@ exports.getUnReadNotifications = catchAsyncErrors(async (req, res, next) => {
 // get all notifications
 
 exports.getNotifications = catchAsyncErrors(async (req, res, next) => {
-    const page = req.query?.page * 1 || 1;
-    const limit = req.query?.limit * 1 || 10;
+    const page = Number(req.query?.page * 1) || 1;
+    const limit = Number(req.query?.limit * 1) || 10;
+    const range_start = Number(req.query?.range_start) || Date.now();
+    const range_end = Number(req.query?.range_end) || 1671519571904;
+    const search = req.query?.search || "";
     const skip = (page - 1) * limit;
 
-    const notifications = await Notification.find({ user: req.user._id })
+    const query = { user: req.user._id, $or: [{ message: { $regex: search, $options: "-i" } }] , createdAt: { $lte: range_start, $gte: range_end } };
+
+    const notifications = await Notification.find(query)
         .skip(skip)
         .limit(limit)
         .sort({ createdAt: -1 });
 
-    const total = await Notification.countDocuments({ user: req.user._id });
+    const total = await Notification.countDocuments(query);
 
     res.status(200).json({
         success: true,

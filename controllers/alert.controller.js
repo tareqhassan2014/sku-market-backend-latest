@@ -345,3 +345,16 @@ exports.createManyAlerts = catchAsyncErrors(async (req, res, next) => {
             },
         },
 */
+
+
+// Get a single Alert
+exports.getSingleAlert = catchAsyncErrors(async(req, res, next) => {
+  const alert_id = req.params.id;
+
+  const data = await Alert.findById(alert_id);
+
+  res.status(200).json({
+    success: true,
+    data
+  })
+});

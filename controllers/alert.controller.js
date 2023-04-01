@@ -45,7 +45,12 @@ exports.Alert = catchAsyncErrors(async (req, res, next) => {
         // update alert
 
         alert.active = req.body.active;
-        alert.alert_is_live = req.body.alert_is_live || true;
+
+        if (req.body.alert_is_live === false) {
+            alert.alert_is_live = false;
+        } else {
+            alert.alert_is_live = true;
+        }
 
         if (req.body.price_move_above) {
             alert.price_move_above = req.body.price_move_above;

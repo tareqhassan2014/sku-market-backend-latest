@@ -22,5 +22,6 @@ router.use(
   require("./keywordSearchAnalytics.router")
 );
 router.use("/user-history", require("./userHistory.router"));
+router.use("/subscription", require("./subscription.router"));
 
 module.exports = router;

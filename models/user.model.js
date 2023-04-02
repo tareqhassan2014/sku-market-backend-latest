@@ -151,6 +151,35 @@ const userSchema = new mongoose.Schema(
             },
         },
 
+        defaultCurrency: {
+            label: String,
+            value: String,
+        },
+
+        payment: {
+            sales: {
+                currency: {
+                    label: String,
+                    value: String,
+                },
+                vat: Number
+            },
+            subscription: {
+                currency: {
+                    label: String,
+                    value: String,
+                },
+                vat: Number
+            },
+            ads: {
+                currency: {
+                    label: String,
+                    value: String,
+                },
+                vat: Number
+            }
+        },
+
         delivery_method: String,
         isProfileComplete: {
             type: Boolean,

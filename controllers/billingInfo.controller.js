@@ -1,6 +1,7 @@
 const BillingInfo = require("../models/billingInfo.model");
 const User = require("../models/user.model");
 const catchAsyncErrors = require("../util/catchAsyncErrors");
+const  {Types}  = require("mongoose");
 
 // Add a new address
 exports.addAddress = catchAsyncErrors(async (req, res, next) => {
@@ -81,9 +82,29 @@ exports.updateBillingInfo = catchAsyncErrors(async (req, res, next) => {
         "addresses.$.country": country,
         "addresses.$.location": location,
         "addresses.$.isApproved": false,
-      },
+      }
     },
-    { runValidators: true }
+    { runValidators: false }
+  );
+
+  const result2 = await BillingInfo.updateOne(
+    { userId },
+    [
+      {
+        $set: {
+          "defaultAddress": {
+            $cond: {
+              if: {
+                $eq: [Types.ObjectId(_id), { $getField: "defaultAddress" }]
+              },
+              then: "",
+              else: "$defaultAddress",
+            }
+          }
+        }
+      }
+    ],
+    { runValidators: false }
   );
 
   res.status(200).json({

@@ -2,13 +2,12 @@
     "name": "sku-markets-backend",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
-   
+    "main": "server.js",
     "scripts": {
-        "start": "node index.js",
-        "prod": "set NODE_ENV=production&& node index.js",
-        "dev": "set NODE_ENV=development&&nodemon index.js",
-        "local": "set DATABASE_URL=mongodb://localhost:27017&&set NODE_ENV=development&&nodemon index.js"
+        "start": "node server.js",
+        "winstart": "set NODE_ENV=production&& node server.js",
+        "dev": "set NODE_ENV=development&&nodemon server.js",
+        "local": "set DATABASE_URL=mongodb://localhost:27017&&set NODE_ENV=development&&nodemon server.js"
     },
     "keywords": [],
     "author": "",

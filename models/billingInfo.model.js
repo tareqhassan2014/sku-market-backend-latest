@@ -8,7 +8,9 @@ const billingInfoSchema = mongoose.Schema(
       required: [true, "UserId is required"],
     },
 
-    defaultAddress: mongoose.Schema.Types.ObjectId,
+    defaultAddress: {
+      type: mongoose.Schema.Types.ObjectId || String,
+    },
 
     addresses: [
       {

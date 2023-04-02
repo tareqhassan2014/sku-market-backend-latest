@@ -1,30 +1,32 @@
 const router = require("express").Router();
 const protect = require("../middleware/protect");
 const upload = require("../lib/multer");
+
 const {
-  registerUser,
-  loginUser,
-  forgotPassword,
-  resetPassword,
-  logoutUser,
-  updatePassword,
-  setRefreshToken,
-  verifyEmail,
-  sendOTP,
-  verifyOTP,
-  sendEmailVerificationToken,
-  updateMe,
-  updateAvatar,
-  getUserProfile,
-  getUserShareProfile,
-  updateAgreement,
-  updateCover,
-  uploadDocs,
-  updateDocsInfo,
-  completeProfile,
-  deleteDocs,
-  activateUser,
-} = require("../controllers/auth.controller");
+    sendOTP,
+    updateMe,
+    verifyOTP,
+    loginUser,
+    uploadDocs,
+    logoutUser,
+    deleteDocs,
+    verifyEmail,
+    updateCover,
+    registerUser,
+    updateAvatar,
+    activateUser,
+    updatePayment,
+    resetPassword,
+    getUserProfile,
+    updatePassword,
+    forgotPassword,
+    updateDocsInfo,
+    updateAgreement,
+    completeProfile,
+    setRefreshToken,
+    getUserShareProfile,
+    sendEmailVerificationToken,
+} = require("../controllers/auth");
 
 router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
@@ -35,8 +37,8 @@ router.route("/password/update").put(protect, updatePassword);
 router.route("/refresh_token").get(protect, setRefreshToken);
 router.route("/email/verify/:token").get(protect, verifyEmail);
 router
-  .route("/send/email/verify/token")
-  .get(protect, sendEmailVerificationToken);
+    .route("/send/email/verify/token")
+    .get(protect, sendEmailVerificationToken);
 router.route("/send/otp").post(protect, sendOTP);
 router.route("/verify/otp").post(protect, verifyOTP);
 
@@ -51,5 +53,9 @@ router.route("/update-docs-info").patch(protect, updateDocsInfo);
 router.route("/complete-profile").patch(protect, completeProfile);
 router.route("/docs-delete").patch(protect, deleteDocs);
 router.route("/activate-user").patch(protect, activateUser);
+router.route("/update-payment").patch(protect, updatePayment);
+
+// ------------ Update All User -------------
+// router.route("/update-all").patch(updateAll);
 
 module.exports = router;

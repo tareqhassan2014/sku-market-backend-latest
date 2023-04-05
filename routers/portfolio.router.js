@@ -10,6 +10,7 @@ const {
     portfolioBulkWrite,
     getEmptySkus,
     portfolioTable,
+    removeProductFromPortfolio,
 } = require("../controllers/portfolio.controller");
 
 router.use(protect);
@@ -21,7 +22,7 @@ router
     .delete(deleteAllPortfolio);
 
 router.route("/empty").get(getEmptySkus);
-router.route("/product").post(addProductToPortfolio);
+router.route("/product").post(addProductToPortfolio).delete(removeProductFromPortfolio);
 router.route("/product/bulk").post(portfolioBulkWrite);
 router.route("/:id").delete(deletePortfolio).get(portfolioTable);
 

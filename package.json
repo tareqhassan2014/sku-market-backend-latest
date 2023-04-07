@@ -7,7 +7,9 @@
         "start": "node server.js",
         "winstart": "set NODE_ENV=production&& node server.js",
         "dev": "set NODE_ENV=development&&nodemon server.js",
-        "local": "set DATABASE_URL=mongodb://localhost:27017&&set NODE_ENV=development&&nodemon server.js"
+        "local": "set DATABASE_URL=mongodb://localhost:27017&&set NODE_ENV=development&&nodemon server.js",
+        "prod": "pm2 start server.js",
+        "prod:stop": "pm2 stop server.js"      
     },
     "keywords": [],
     "author": "",
@@ -33,6 +35,7 @@
         "multer": "^1.4.5-lts.1",
         "nodemailer": "^6.8.0",
         "nodemon": "^2.0.20",
+        "pdfkit": "^0.13.0",
         "socket.io": "^4.5.3",
         "xss-clean": "^0.1.1"
     }

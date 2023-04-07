@@ -134,6 +134,16 @@ const subscriptionSchema = mongoose.Schema(
       default: 0,
     },
 
+    subscriptions: [
+      {
+        plan: String,
+        plan_type: String,
+        subscription_fees: Number,
+        vat_price: Number,
+        net_cost: Number,
+      }
+    ],
+
     invoice: {
       url: String,
       id: String,

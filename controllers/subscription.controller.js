@@ -1,6 +1,7 @@
 const Subscription = require("../models/subscription.model");
 const catchAsyncErrors = require("../util/catchAsyncErrors");
 const AppError = require("../util/appError");
+const createInvoice = require("../util/invoice/createInvoice");
 
 const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const currentDate = new Date();
@@ -27,6 +28,16 @@ exports.createSubscription = catchAsyncErrors(async(req, res, next) => {
   // -- Upgrad previous plan if in the same month --
   if(prev && new Date().setMonth(prev.plan_start.getMonth() + 1, 1) > new Date()) {
 
+    if(!prev.subscription_fees === 0) {
+      prev.subscriptions.push({
+        plan: prev?.plan,
+        plan_type: prev?.plan_type,
+        subscription_fees: prev?.subscriptions_fees,
+        vat_price: prev?.vat_price,
+        net_cost: prev?.net_cost,
+      });
+    };
+
     prev.plan = plan || prev.plan;
     prev.plan_type = plan_type || prev.plan_type;
     prev.prev_balance = prev?.ending_balance;
@@ -41,6 +52,8 @@ exports.createSubscription = catchAsyncErrors(async(req, res, next) => {
     }
 
     await prev.save();
+
+    await createInvoice(prev, req.user._id);
 
     return res.status(200).json({
       success: true,
@@ -58,7 +71,23 @@ exports.createSubscription = catchAsyncErrors(async(req, res, next) => {
     prev_balance: prev?.ending_balance,
     prev_month: prev?.plan_start,
   }
-  const result = await Subscription.create(newData);
+  const result = new Subscription(newData);
+  
+  if(!result.subscription_fees === 0) { 
+    result.subscriptions.push({
+      subscriptions: [{
+        plan: result.plan,
+        plan_type: result.plan_type,
+        subscription_fees: result.subscription_fees,
+        vat_price: result.vat_price,
+        net_cost: result.net_cost,
+      }],
+    });
+  }
+
+  await result.save();
+  
+  await createInvoice(result, req.user._id);
 
   res.status(201).json({
     success: true,

@@ -25,6 +25,18 @@ const paymentSchema = new mongoose.Schema({
       },
     },
   ],
+  rtvOrders: [
+    {
+      orderNo: {
+        type: mongoose.Types.ObjectId,
+        ref: "Order",
+      },
+      returnQty: {
+        type: Number,
+        default: 0,
+      },
+    },
+  ],  
   totalQty: {
     type: Number,
     required: [true, "Qty is required"],

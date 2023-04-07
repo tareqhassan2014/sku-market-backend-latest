@@ -1,18 +1,66 @@
 const ShipmentStatus = {
-  // When Order Status is ACCEPTED from Buyer (Default Mark)
-  PENDING: "PENDING",
-  // When Buyer Ships the Order and Attach Documents (Marked by Seller)
+  // When Payment Status is PAID (Default)
+  PREPARING: "PREPARING",
+
+  // When the shipment status is "PREPARING", SELLER can do one of the following
+  ////////////////////////
+  PREPARING_CANCELLED_FROM_SELLER: "PREPARING_CANCELLED_FROM_SELLER",
+  PICKED: "PICKED",
+  ////////////////////////
+
+  // When the shipment status is "PICKED", SELLER can do one of the following
+  ////////////////////////
+  PACKED: "PACKED",
+  /*
+   * PREPARING_CANCELLED_FROM_SELLER
+   */
+  ////////////////////////
+
+  // When the shipment status is "PACKED", SELLER can do one of the following
+  ////////////////////////
   SHIPPED: "SHIPPED",
-  // When Order is Delivered by the Shipment Company (Marked by Seller)
+  /*
+   * PREPARING_CANCELLED_FROM_SELLER
+   */
+  ////////////////////////
+
+  // When the shipment status is "SHIPPED", SELLER can do one of the following
+  ////////////////////////
+  SHIPPED_CANCELLED_FROM_SELLER: "SHIPPED_CANCELLED_FROM_SELLER",
   DELIVERED: "DELIVERED",
-  // When Buyer Confirms the Delivery (Marked by Buyer)
+  ////////////////////////
+
+  // When the shipment status is "DELIVERED", BUYER can do one of the following
+  ////////////////////////
   CONFIRMED: "CONFIRMED",
-  // When Buyer Does not Confirm the Delivery but Order was Marked as Delivered (Marked by Buyer)
-  DENIED: "DENIED",
-  // (Return to Vendor) When Buyer returns the order to the Seller (Marked by Buyer)
-  RTV: "RTV",
-  // When Order is Received then Seller after RTV (Marked by Seller)
-  RETURNED: "RETURNED",
+  RTV_PENDING: "RTV_PENDING",
+  ////////////////////////
+
+  // When the shipment status is "RTV_PENDING", SELLER can do one of the following
+  ////////////////////////
+  RTV_PENDING_CANCELLED_FROM_SELLER: "RTV_PENDING_CANCELLED_FROM_SELLER",
+  RTV_CONFIRMED: "RTV_CONFIRMED",
+  ////////////////////////
+
+  // When the shipment status is "RTV_CONFIRMED", BUYER can do one of the following
+  ////////////////////////
+  RTV_SHIPPED: "RTV_SHIPPED",
+  RTV_CANCELLED_FROM_BUYER: "RTV_CANCELLED_FROM_BUYER",
+  ////////////////////////
+
+  // When the shipment status is "RTV_SHIPPED", BUYER can do one of the following
+  ////////////////////////
+  RTV_DELIVERED: "RTV_DELIVERED",
+  /*
+   * RTV_CANCELLED_FROM_BUYER
+   */
+  ////////////////////////
+
+  // When the shipment status is "RTV_DELIVERED", SELLER can do one of the following
+  ////////////////////////
+  RTV_DELIVERED_CANCELLED_FROM_SELLER: "RTV_DELIVERED_CANCELLED_FROM_SELLER",
+  RTV_COMPLETED: "RTV_COMPLETED",
+  ////////////////////////
 };
 
 module.exports = {

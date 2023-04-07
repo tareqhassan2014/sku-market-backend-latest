@@ -5,6 +5,7 @@ const Order = require("../models/order.model");
 const Payment = require("../models/payment.model");
 const User = require("../models/user.model");
 const { PaymentStatus, OrderStatus } = require("../util/OrderStatus");
+const { createShipment } = require("./shipment.controller");
 
 exports.initializePayment = catchAsyncErrors(async (req, res, next) => {
   try {
@@ -118,7 +119,7 @@ exports.paymentCallback = catchAsyncErrors(async (req, res, next) => {
   const userId = req.user._id;
 
   try {
-    await Payment.updateOne(
+    const payment = await Payment.updateOne(
       {
         $and: [
           { _id: req.body.paymentId },
@@ -135,7 +136,14 @@ exports.paymentCallback = catchAsyncErrors(async (req, res, next) => {
       },
       { upsert: true }
     );
-  } catch (error) {}
+
+    // Create a shipment for the payment
+    if (payment.modifiedCount == 1) {
+      await createShipment(userId, req.body.paymentId);
+    }
+  } catch (error) {
+    console.log("AAA", error);
+  }
 
   res.status(204).json({
     status: "ok",
@@ -176,11 +184,22 @@ exports.removeOrderFromPayment = catchAsyncErrors(async (req, res, next) => {
   const orderId = req.body.orderId;
 
   try {
+    const order = await Order.findById(orderId)
+      .select("quantity price")
+      .allowDiskUse(true);
+
     const payment = await Payment.findOneAndUpdate(
       {
-        $and: [{ _id: paymentId }, { user: userId }],
+        _id: paymentId,
+        user: userId,
       },
-      { $pull: { orders: { orderNo: orderId } } },
+      {
+        $pull: { orders: { orderNo: orderId } },
+        $inc: {
+          totalQty: -order.quantity,
+          totalAmount: -(order.quantity * order.price),
+        },
+      },
       { new: true }
     );
 
@@ -198,7 +217,9 @@ exports.removeOrderFromPayment = catchAsyncErrors(async (req, res, next) => {
         },
       });
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log("E", error);
+  }
 
   res.status(204).json({
     status: "ok",

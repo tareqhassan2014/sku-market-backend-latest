@@ -3,37 +3,24 @@ const { ShipmentStatus } = require("../util/ShipmentStatus");
 
 const shipmentSchema = new mongoose.Schema(
   {
-    order: {
+    payment: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Order",
-      required: [true, "Order is required"],
+      ref: "Payment",
+      required: [true, "Payment is required"],
     },
-    deliveryDays: {
-      type: Number,
-      required: [true, "Delivery Days are Required"],
-    },
-    deliverySchedule: {
-      startDate: {
-        type: Date,
-        required: [true, "Start Date is required"],
-      },
-      endDate: {
-        type: Date,
-        required: [true, "End Date is required"],
-      },
-    },
-    shipmentNumber: {
-      type: Number,
-      required: [true, "Shipment Number (AWB) is required"],
-    },
-    shipmentDocument: {
+    awbNumber: {
       type: String,
-      required: [true, "Shipment Document (PDF) is required"],
+    },
+    rtvAwbNumber: {
+      type: String,
+    },
+    rtvReason: {
+      type: String,
     },
     status: {
       type: String,
       enum: ShipmentStatus,
-      default: ShipmentStatus.PENDING,
+      default: ShipmentStatus.PREPARING,
     },
   },
   {

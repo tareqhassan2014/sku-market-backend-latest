@@ -22,6 +22,9 @@ router.use(
   require("./keywordSearchAnalytics.router")
 );
 router.use("/user-history", require("./userHistory.router"));
+router.use("/shipment", require("./shipment.router"));
+router.use("/sellerboard-flow-setup", require("./sellerBoardFlowSetup.router"))
 router.use("/subscription", require("./subscription.router"));
+router.use("/invoice", require("./invoice.router"));
 
 module.exports = router;

@@ -45,20 +45,30 @@ const subscriptionSchema = mongoose.Schema(
       }
     },
 
+    plan_start: {
+      type: Date,
+      default: Date.now(),
+    },
+
+    plan_end: {
+      type: Date,
+      default: new Date().setMonth(currentDate.getMonth() + 1),
+    },
+
     subscription_fees: {
       type: Number,
       default: 0,
     },
 
-    month: {
-      type: String,
-      default: months[currentDate.getMonth()],
-    },
+    // month: {
+    //   type: String,
+    //   default: months[currentDate.getMonth()],
+    // },
 
-    year: {
-      type: Number || String,
-      default: currentDate.getFullYear(),
-    },
+    // year: {
+    //   type: Number || String,
+    //   default: currentDate.getFullYear(),
+    // },
 
     vat_rate: {
       type: Number,
@@ -91,8 +101,9 @@ const subscriptionSchema = mongoose.Schema(
     },
 
     prev_month: {
-      type: String,
-      default: months[currentDate.getMonth()-1]
+      type: Date,
+      // default: months[currentDate.getMonth()-1],
+      default: Date.now(),
     },
 
     prev_balance: {
@@ -130,7 +141,6 @@ const subscriptionSchema = mongoose.Schema(
       amount: Number,
       date: Date,
     }
-
   },
   {
     timestamps: true,
@@ -143,6 +153,7 @@ subscriptionSchema.pre('save', async function(next) {
   if(this.plan === "B2B Marketplace") {
     this.subscription_fees = 0;
     this.plan_status = 'active';
+    this.plan_end = new Date().setFullYear(currentDate.getFullYear() + 5);
   } else if (this.plan === "B2C Partner Stores") {
     this.subscription_fees = 250;
   } else if (this.plan === "Data Analytics") {
@@ -158,9 +169,14 @@ subscriptionSchema.pre('save', async function(next) {
   if(this.plan_type === 'annually') {
     this.discount_rate = 20;
     this.subscription_fees = 12 * this.subscription_fees;
+    this.plan_end = new Date().setFullYear(currentDate.getFullYear() + 1);
   
-    this.month = currentDate.getMonth() === 0 ? "Jan" - "Dec" : `${months[currentDate.getMonth()]} - ${months[currentDate.getMonth()-1]}`;
-    this.year = currentDate.getMonth() === 0 ? currentDate.getFullYear() : `${currentDate.getFullYear().toString().substr(-2)}-${(currentDate.getFullYear()+1).toString().substr(-2)}`;
+    // this.month = currentDate.getMonth() === 0 ? "Jan" - "Dec" : `${months[currentDate.getMonth()]} - ${months[currentDate.getMonth()-1]}`;
+    // this.year = currentDate.getMonth() === 0 ? currentDate.getFullYear() : `${currentDate.getFullYear().toString().substr(-2)}-${(currentDate.getFullYear()+1).toString().substr(-2)}`;
+  }
+
+  if(this.plan_type === 'monthly') {
+    this.plan_end === new Date().setMonth(currentDate.getMonth() + 1);
   }
 
   this.vat_price = (this.subscription_fees/100) * this.vat_rate;
@@ -174,14 +190,6 @@ subscriptionSchema.pre('save', async function(next) {
   this.total_cost = total_cost;
   this.ending_balance = total_cost - this.total_payment;
 
-  if(this.ending_balance < 0.1) {
-    this.plan_status = 'active';
-  }
-
-  next();
-});
-
-subscriptionSchema.post('update', async function(next) {
   if(this.ending_balance < 0.1) {
     this.plan_status = 'active';
   }

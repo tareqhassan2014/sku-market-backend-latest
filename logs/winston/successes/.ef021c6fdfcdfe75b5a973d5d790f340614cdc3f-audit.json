@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Users\\tareq\\OneDrive\\Desktop\\project\\sku-market-backend-tareq\\logs\\winston\\successes\\.ef021c6fdfcdfe75b5a973d5d790f340614cdc3f-audit.json",
+    "files": [
+        {
+            "date": 1685814018713,
+            "name": "C:\\Users\\tareq\\OneDrive\\Desktop\\project\\sku-market-backend-tareq\\logs\\winston\\successes\\sku-2023-03-06-23-success.log",
+            "hash": "cdd342460b37a5b3af73cd665fb2b712596dee19c5583416b10c65e3770cba35"
+        }
+    ],
+    "hashType": "sha256"
+}

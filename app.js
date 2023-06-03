@@ -12,6 +12,7 @@ const http = require("http");
 const hpp = require("hpp");
 const device = require("express-device");
 const apiFeature = require("./middleware/api.feature");
+const { stream } = require("./lib/winston");
 
 const socketServer = require("./socket/socketServer");
 
@@ -29,10 +30,8 @@ app.use(device.capture());
 app.use(helmet());
 app.use(cors());
 
-// Development logging
-if (process.env.NODE_ENV === "development") {
-    app.use(morgan("dev"));
-}
+// Use Morgan middleware with the custom stream
+app.use(morgan("combined", { stream }));
 
 // Limit requests from the same IP
 const limiter = rateLimit({

@@ -1,0 +1,6 @@
+{"level":"error","message":{"ip":"::1","method":"\"DELETE","statusCode":"401","time":"HTTP/1.1\"","url":"/api/v1/product/638f21e2629fd59eb22ccfc7"},"timestamp":"2023-06-03T17:41:41.450Z"}
+{"level":"error","message":{"ip":"::1","method":"\"DELETE","statusCode":"401","time":"HTTP/1.1\"","url":"/api/v1/product/638f21e2629fd59eb22ccfc7"},"timestamp":"2023-06-03T17:42:24.376Z"}
+{"level":"error","message":{"ip":"::1","method":"\"DELETE","statusCode":"401","time":"HTTP/1.1\"","url":"/api/v1/product/638f21e2629fd59eb22ccfc7"},"timestamp":"2023-06-03T17:43:19.783Z"}
+{"level":"error","message":{"ip":"::1","method":"\"GET","statusCode":"200","time":"HTTP/1.1\"","url":"/api/v1/product"},"timestamp":"2023-06-03T17:43:43.796Z"}
+{"level":"error","message":"::1 - - [03/Jun/2023:17:44:21 +0000] \"GET /api/v1/product HTTP/1.1\" 200 47 \"-\" \"PostmanRuntime/7.32.2\"\n","timestamp":"2023-06-03T17:44:21.860Z"}
+{"level":"info","message":{"ip":"::1","method":"\"DELETE","statusCode":"401","time":"HTTP/1.1\"","url":"/api/v1/product/638f21e2629fd59eb22ccfc7"},"timestamp":"2023-06-03T17:46:52.901Z"}
